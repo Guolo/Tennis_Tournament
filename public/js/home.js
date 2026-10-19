@@ -237,3 +237,12 @@ indicatoreToggle.style.transition = 'none';
 applicaTipo(tipoIniziale);
 indicatoreToggle.getBoundingClientRect(); // forza il reflow prima di riabilitare la transition
 indicatoreToggle.style.transition = '';
+
+// Stessa logica della pagina torneo: al ritorno sulla pagina (bfcache o
+// sblocco del telefono) ricarica lo storico dal server.
+window.addEventListener('pageshow', (e) => {
+  if (e.persisted) caricaStorico();
+});
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'visible') caricaStorico();
+});
