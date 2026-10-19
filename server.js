@@ -22,7 +22,24 @@ const app = express();
 const PORT = process.env.PORT || 3333;
 
 app.use(express.json());
-app.use(express.static(path.join(__dirname, 'public')));
+
+// Niente ETag/304 sulle risposte dinamiche
+app.set('etag', false);
+
+// Le API non devono mai essere messe in cache (browser, iOS Safari, proxy/CDN)
+app.use('/api', (req, res, next) => {
+  res.set('Cache-Control', 'no-store');
+  next();
+});
+
+// L'HTML viene sempre rivalidato, così non resta una pagina vecchia
+app.use(
+  express.static(path.join(__dirname, 'public'), {
+    setHeaders(res, filePath) {
+      if (filePath.endsWith('.html')) res.set('Cache-Control', 'no-cache');
+    },
+  })
+);
 
 // Piccolo helper per uniformare la gestione errori
 function handler(fn) {
