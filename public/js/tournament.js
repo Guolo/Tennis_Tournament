@@ -379,3 +379,14 @@ document.getElementById('btn-termina').addEventListener('click', async () => {
     mostraErrore(err.message);
   }
 });
+
+// Quando la pagina viene ripristinata dalla bfcache (iOS Safari) o l'app
+// torna in primo piano dopo il blocco schermo, i dati possono essere vecchi:
+// li rileggiamo dal server.
+window.addEventListener('pageshow', (e) => {
+  if (e.persisted && seed) caricaTorneo();
+});
+
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'visible' && seed) caricaTorneo();
+});
