@@ -4,7 +4,7 @@
 
 const Api = {
   async _richiesta(url, opzioni) {
-    const risposta = await fetch(url, opzioni);
+    const risposta = await fetch(url, { cache: 'no-store', ...opzioni });
     const dati = await risposta.json().catch(() => ({}));
     if (!risposta.ok) {
       throw new Error(dati.errore || 'Errore di comunicazione con il server.');
